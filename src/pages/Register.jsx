@@ -1,12 +1,17 @@
 import { useState } from "react";
+import { registerApi } from "../api/authApi";
+import { useNavigate } from "react-router-dom";
 export default function Register() {
   const [name, setName] = useState("Shubham Semwal");
   const [email, setEmail] = useState("shubham@gmail.com");
   const [password, setPassword] = useState("shubham@123");
+  const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log({ name, email, password });
+    const data = await registerApi({ name, email, password });
+    console.log(data);
+    navigate("/login");
   };
 
   return (

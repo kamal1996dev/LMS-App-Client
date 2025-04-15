@@ -8,12 +8,30 @@ import {
   MenuItems,
   Transition,
 } from "@headlessui/react";
-import { Fragment } from "react";
+import { Fragment, useEffect } from "react";
 import { useAuth } from "../context/AuthContext";
+import { getCartApi } from "../api/cartApi";
+import { getUserProfileApi } from "../api/authApi";
 
 export default function Navbar({ darkMode, toggleDarkMode }) {
   const { cartCount } = useCart();
-  const { user, logout } = useAuth();
+  const { user, setUser } = useAuth();
+
+  const { setCart } = useCart();
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const userProfile = await getUserProfileApi();
+        console.log(userProfile);
+        setUser(userProfile);
+        const cartData = await getCartApi();
+        setCart(cartData);
+      } catch (err) {
+        console.log(err);
+      }
+    })();
+  }, []);
 
   return (
     <nav className="sticky top-0 left-0 right-0 bg-white/80 dark:bg-gray-900/80 backdrop-blur-lg shadow-lg mb-4">
@@ -80,7 +98,9 @@ export default function Navbar({ darkMode, toggleDarkMode }) {
                         </div>
                         <MenuItem>
                           <button
-                            onClick={logout}
+                            onClick={() => {
+                              console.log("clicked");
+                            }}
                             className={`group flex w-full items-center gap-2 rounded-lg py-1.5 px-3 data-[focus]:dark:bg-white/10 data-[focus]:bg-gray-200 dark:text-gray-200`}
                           >
                             Sign out
